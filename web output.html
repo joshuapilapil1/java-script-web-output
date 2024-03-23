@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Exercise 2</title>
+</head>
+<body>
+  <h1>JavaScript Exercise 2</h1>
+
+  
+  <label for="firstName">First Name:</label>
+  <input type="text" id="firstName"><br>
+
+  <label for="middleName">Middle Name:</label>
+  <input type="text" id="middleName"><br>
+
+  <label for="lastName">Last Name:</label>
+  <input type="text" id="lastName"><br>
+
+  <label for="age">Age:</label>
+  <input type="number" id="age"><br>
+
+  
+  <button onclick="loadDataIntoRecordSystem()">Load Data into Record System</button>
+  
+  <button onclick="clearFields()">Clear</button><br><br>
+
+ 
+  <h2>Record System</h2>
+  
+  <label for="recordInput">Enter Record:</label>
+  <input type="text" id="recordInput">
+  
+  <button onclick="addRecord()">Add Record</button><br><br>
+
+  
+  <button onclick="sortByLastName()">Sort by Last Name (A-Z)</button>
+
+  <button onclick="saveToLocalStorage()">Save to Local Storage</button>
+
+  <button onclick="clearLocalStorage()">Clear Local Storage</button><br><br>
+
+  
+  <div id="recordList">
+    
+  </div>
+
+  
+  <script>
+    var records = [];
+
+    
+    function loadDataIntoRecordSystem() {
+
+      var firstName = document.getElementById("firstName").value;
+
+      var middleName = document.getElementById("middleName").value;
+
+      var lastName = document.getElementById("lastName").value;
+
+      var age = document.getElementById("age").value;
+
+      var fullName = firstName + " " + middleName + " " + lastName + " (Age: " + age + ")";
+
+      document.getElementById("recordInput").value = fullName;
+    }
+
+    
+    function clearFields() {
+      document.getElementById("firstName").value = "";
+
+      document.getElementById("middleName").value = "";
+
+      document.getElementById("lastName").value = "";
+
+      document.getElementById("age").value = "";
+    }
+
+    
+    function addRecord() {
+
+      var record = document.getElementById("recordInput").value;
+
+      if (record.trim() !== "") {
+
+        records.push(record);
+
+        displayRecords();
+
+        document.getElementById("recordInput").value = "";
+
+      } else {
+        alert("Please enter a valid record.");
+      }
+    }
+
+   
+    function deleteRecord(index) {
+
+      records.splice(index, 1);
+
+      displayRecords();
+    }
+
+    
+    function displayRecords() {
+      var recordListDiv = document.getElementById("recordList");
+
+      recordListDiv.innerHTML = "";
+
+      records.forEach(function(record, index) {
+
+        var recordDiv = document.createElement("div");
+
+        recordDiv.textContent = record;
+
+        var deleteButton = document.createElement("button");
+
+        deleteButton.textContent = "Delete";
+
+        deleteButton.onclick = function() {
+
+          deleteRecord(index);
+        };
+        recordDiv.appendChild(deleteButton);
+
+        recordListDiv.appendChild(recordDiv);
+      });
+    }
+
+    
+    function sortByLastName() {
+
+      records.sort(function(a, b) {
+        
+        var lastNameA = a.split(" ")[2];
+        var lastNameB = b.split(" ")[2];
+        return lastNameA.localeCompare(lastNameB);
+      });
+      displayRecords();
+    }
+
+    
+    function saveToLocalStorage() {
+      
+      var recordsJSON = JSON.stringify(records);
+      
+      localStorage.setItem('records', recordsJSON);
+      
+      alert('Records saved to local storage.');
+    }
+
+   
+    function clearLocalStorage() {
+      localStorage.removeItem('records');
+      records = [];
+      displayRecords();
+      alert('Local storage cleared.');
+    }
+
+    
+    window.onload = function() {
+      var storedRecords = localStorage.getItem('records');
+      if (storedRecords) {
+        records = JSON.parse(storedRecords);
+        displayRecords();
+      }
+    };
+  </script>
+</body>
+</html>
